@@ -156,9 +156,6 @@ struct PoleDancer : Module {
     float resParam = params[RES_KNOB_PARAM].getValue();
     float resCvParam = params[RES_CV_PARAM].getValue();
     float freqParam = params[CUTOFF_PARAM].getValue();
-    // TODO: do I need this?
-    // Rescale for backward compatibility
-    freqParam = freqParam * 10.f - 5.f;
     float freqCvParam = params[CUTOFF_CV_PARAM].getValue();
 
     int channels = std::max(1, inputs[IN_INPUT].getChannels());
