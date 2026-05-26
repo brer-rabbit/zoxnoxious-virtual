@@ -1,0 +1,292 @@
+#include "plugin.hpp"
+#include "zcomponentlib.hpp"
+#include "modulehelpers.hpp"
+
+namespace noxious {
+
+std::string names[] = { "Lola", "Candy", "Ginger", "Anastasia", "Cherry", "Destiny", "Scarlett", "Bambi", "Trixie", "Diamond", "Sky", "Delight", "Jezebel", "Journey", "Kitty", "Roxanne", "Portia" };
+static constexpr int nameCount = sizeof(names) / sizeof(names[0]);
+
+static const int numVoltages = 5;
+
+
+struct PoleDancerPersonality : Module {
+  enum ParamId {
+    DRY_MIX_KNOB_PARAM,
+    POLE1_MIX_KNOB_PARAM,
+    POLE2_MIX_KNOB_PARAM,
+    POLE3_MIX_KNOB_PARAM,
+    POLE4_MIX_KNOB_PARAM,
+    PARAMS_LEN
+  };
+  enum InputId {
+    INPUTS_LEN
+  };
+  enum OutputId {
+    POLE_MIX_OUTPUT,
+    OUTPUTS_LEN
+  };
+  enum LightId {
+    LIGHTS_LEN
+  };
+
+  std::string personalityNameString;
+  bool nameStringDirty;
+
+  dsp::ClockDivider clockDivider;
+  float voltages[numVoltages];
+
+  PersonalityMessage expanderMessages[2] = {};
+  bool personalityAuthoritative = false;
+
+  PoleDancerPersonality() :
+    personalityNameString(names[APP->engine->getFrame() % nameCount]), nameStringDirty(true) {
+
+    config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
+    configParam(DRY_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Dry Mix", "%", 0.f, 10.f);
+    configParam(POLE1_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 1 Mix", "%", 0.f, 10.f);
+    configParam(POLE2_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 2 Mix", "%", 0.f, 10.f);
+    configParam(POLE3_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 3 Mix", "%", 0.f, 10.f);
+    configParam(POLE4_MIX_KNOB_PARAM, 0.f, 10.f, 10.f, "Pole 4 Mix", "%", 0.f, 10.f);
+    configOutput(POLE_MIX_OUTPUT, "Pole Mix Voltage Series");
+
+    clockDivider.setDivision(512);
+    memset(voltages, 0, sizeof(float) * numVoltages);
+
+    rightExpander.producerMessage = &expanderMessages[0];
+    rightExpander.consumerMessage = &expanderMessages[1];
+  }
+
+
+  void process(const ProcessArgs& args) override {
+
+    if (clockDivider.process()) {
+
+      // expander handling
+      bool analyzerPresent = rightExpander.module && rightExpander.module->model == modelPoleDancerWorkbenchForPersonalityVirtual;
+      if (analyzerPresent) {
+        // Write to Analyzer
+        PersonalityMessage *toAnalyzer = static_cast<PersonalityMessage*>(rightExpander.module->leftExpander.producerMessage);
+        toAnalyzer->leftAuthoritative = personalityAuthoritative;
+        for (int i = 0; i < 5; i++) {
+          toAnalyzer->values[i] = params[DRY_MIX_KNOB_PARAM + i].getValue();
+        }
+        rightExpander.module->leftExpander.messageFlipRequested = true;
+
+        // Read from Analyzer (only when I am not authoritative)
+        if (!personalityAuthoritative) {
+          PersonalityMessage* fromAnalyzer = static_cast<PersonalityMessage*>(rightExpander.consumerMessage);
+          for (int i = 0; i < 5; i++) {
+            params[DRY_MIX_KNOB_PARAM + i].setValue(fromAnalyzer->values[i]);
+          }
+        }
+        personalityAuthoritative = false;  // clear after one cycle
+      }
+
+
+      for (int i = 0; i < numVoltages; ++i) {
+        voltages[i] = params[DRY_MIX_KNOB_PARAM + i].getValue();
+      }
+
+
+      // these are only written at the control rate.  I believe this to be fine.
+      if (outputs[POLE_MIX_OUTPUT].isConnected()) {
+        outputs[POLE_MIX_OUTPUT].setChannels(numVoltages);
+        outputs[POLE_MIX_OUTPUT].writeVoltages(voltages);
+      }
+
+    }
+  }
+
+  void onExpanderChange(const ExpanderChangeEvent& e) override {
+    // fire on connect AND disconnect
+    bool analyzerPresent = rightExpander.module && rightExpander.module->model == modelPoleDancerWorkbenchForPersonalityVirtual;
+    if (analyzerPresent) {
+      personalityAuthoritative = true;
+    }
+  }
+
+  void onReset() override {
+    // using getFrame as a rand source
+    personalityNameString = names[APP->engine->getFrame() % nameCount];
+    nameStringDirty = true;
+  }
+
+  void onRandomize() override {
+    personalityNameString = names[APP->engine->getFrame() % nameCount];
+    nameStringDirty = true;
+  }
+
+
+  json_t* dataToJson() override {
+    json_t* rootJ = json_object();
+    json_object_set_new(rootJ, "personalityNameString", json_stringn(personalityNameString.c_str(), personalityNameString.size()));
+    return rootJ;
+  }
+
+  void dataFromJson(json_t* rootJ) override {
+    json_t* textJ = json_object_get(rootJ, "personalityNameString");
+    if (textJ) {
+      personalityNameString = json_string_value(textJ);
+    }
+    nameStringDirty = true;
+    personalityAuthoritative = true; // re-asset as authoritative after load
+  }
+
+
+};
+
+
+static const int fontSize = 12;
+
+struct PersonalityTextField : LedDisplayTextField {
+  PoleDancerPersonality* module;
+  std::shared_ptr<Font> font;
+
+  // override to set color & posiiton
+  PersonalityTextField() {
+    LedDisplayTextField();
+    color = nvgRGB(230, 235, 232);
+    textOffset = math::Vec(0, -3);
+    font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/OSP-DIN.ttf"));
+  }
+
+  void step() override {
+    LedDisplayTextField::step();
+    if (module && module->nameStringDirty) {
+      setText(module->personalityNameString);
+      module->nameStringDirty = false;
+    }
+  }
+
+  void onChange(const ChangeEvent& e) override {
+    if (module) {
+      module->personalityNameString = getText();
+    }
+  }
+
+  // override here to set text size
+  void drawLayer(const DrawArgs& args, int layer) override {
+    nvgScissor(args.vg, RECT_ARGS(args.clipBox));
+
+    if (layer == 1) {
+      // Text
+      if (font && font->handle >= 0) {
+        bndSetFont(font->handle);
+
+        nvgTextAlign(args.vg, NVG_ALIGN_LEFT | NVG_ALIGN_BOTTOM);
+
+        NVGcolor highlightColor = color;
+        highlightColor.a = 0.5;
+        int begin = std::min(cursor, selection);
+        int end = (this == APP->event->selectedWidget) ? std::max(cursor, selection) : -1;
+        bndIconLabelCaret(args.vg,
+                          textOffset.x, textOffset.y,
+                          box.size.x - 2 * textOffset.x, box.size.y - 2 * textOffset.y,
+                          -1, color, fontSize, text.c_str(), highlightColor, begin, end);
+
+        bndSetFont(font->handle);
+      }
+    }
+
+    Widget::drawLayer(args, layer);
+    nvgResetScissor(args.vg);
+    bndSetFont(APP->window->uiFont->handle);
+  }
+
+
+  // override here to set text size
+  int getTextPosition(math::Vec mousePos) override {
+    std::shared_ptr<window::Font> font = APP->window->loadFont(fontPath);
+    if (!font || !font->handle)
+      return 0;
+
+    bndSetFont(font->handle);
+    int textPos = bndIconLabelTextPosition(APP->window->vg,
+                                           textOffset.x, textOffset.y,
+                                           box.size.x - 2 * textOffset.x, box.size.y - 2 * textOffset.y,
+                                           -1, fontSize, text.c_str(), mousePos.x, mousePos.y);
+    bndSetFont(APP->window->uiFont->handle);
+    return textPos;
+  }
+
+
+
+};
+
+
+struct PersonalityDisplay : LedDisplay {
+  void draw(const DrawArgs& args) override {
+    // override this so we don't get the grey lines around the text box like the Notes module has
+    math::Rect r = box.zeroPos();
+
+    // Black background
+    nvgBeginPath(args.vg);
+    nvgRect(args.vg, RECT_ARGS(r));
+    NVGcolor fillColor = nvgRGB(0x2a, 0x27, 0x23);
+    nvgFillColor(args.vg, fillColor);
+    nvgFill(args.vg);
+
+    // Draw children inside box
+    nvgScissor(args.vg, RECT_ARGS(args.clipBox));
+    Widget::draw(args);
+    nvgResetScissor(args.vg);
+  }
+
+  void setModule(PoleDancerPersonality* module) {
+    PersonalityTextField *textField = createWidget<PersonalityTextField>(Vec(0, 0));
+    textField->box.size = box.size;
+    textField->multiline = false;
+    textField->module = module;
+    addChild(textField);
+  }
+};
+
+
+
+
+struct PoleDancerPersonalityWidget : ModuleWidget {
+  PoleDancerPersonalityWidget(PoleDancerPersonality* module) {
+    setModule(module);
+    setPanel(createPanel(asset::plugin(pluginInstance, "res/PoleDancerPersonality.svg")));
+
+    addChild(createWidget<ScrewSlottedKnurled>(Vec(RACK_GRID_WIDTH, 0)));
+    addChild(createWidget<ScrewSlottedKnurled>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+
+    /*
+    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 18.524)), module, PoleDancerPersonality::DRY_MIX_KNOB_PARAM));
+    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 33.120)), module, PoleDancerPersonality::POLE1_MIX_KNOB_PARAM));
+    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 47.670)), module, PoleDancerPersonality::POLE2_MIX_KNOB_PARAM));
+    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 62.273)), module, PoleDancerPersonality::POLE3_MIX_KNOB_PARAM));
+    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 76.849)), module, PoleDancerPersonality::POLE4_MIX_KNOB_PARAM));
+    */
+
+    addOutput(createOutputCentered<BNCPort>(mm2px(Vec(15.24, 106.579)), module, PoleDancerPersonality::POLE_MIX_OUTPUT));
+
+    // personality name
+    PersonalityDisplay *personalityDisplay = createWidget<PersonalityDisplay>(mm2px(Vec(3.457, 22.0)));
+    personalityDisplay->box.size = mm2px(Vec(23.513, 4.5));
+    //personalityDisplay->box.size = mm2px(Vec(35, 10));
+    personalityDisplay->setModule(module);
+    addChild(personalityDisplay);
+
+  }
+
+  void appendContextMenu(Menu *menu) override {
+
+    menu->addChild(new MenuSeparator());
+
+    InstantiateExpanderItem *expanderItem = createMenuItem<InstantiateExpanderItem>("Add workbench (right side)", "");
+    expanderItem->module = module;
+    expanderItem->model = modelPoleDancerWorkbenchForPersonalityVirtual;
+    expanderItem->posit = box.pos;
+    expanderItem->posit.x += box.size.x;
+    menu->addChild(expanderItem);
+  }
+
+
+};
+
+} // namespace noxious
+
+Model* modelPoleDancerPersonalityVirtual = createModel<noxious::PoleDancerPersonality, noxious::PoleDancerPersonalityWidget>("PoleDancerPersonality");
