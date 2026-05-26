@@ -42,9 +42,9 @@ static float poleMixParamToCoeff(float v) {
   return v * (1/POLEMIX_VOLTAGE_SCALE);
 }
 
-static constexpr float RESONANCE_VOLTAGE_SCALE = 4.f; // 2.5V == coefficient 1.0
+static constexpr float RESONANCE_PARAM_SCALE = 4.f; // 1.0param == 4.0Rez
 static float resonanceParamToCoeff(float v) {
-  return v * RESONANCE_VOLTAGE_SCALE;
+  return v * RESONANCE_PARAM_SCALE;
 }
 
 
@@ -149,10 +149,10 @@ struct PoleDancerWorkbench : Module {
     configParam(POLE2_MIX_PARAM, 0.f, 10.f, 0.f, "Pole 2 Mix", "%", 0.f, 10.f);
     configParam(POLE3_MIX_PARAM, 0.f, 10.f, 0.f, "Pole 3 Mix", "%", 0.f, 10.f);
     configParam(POLE4_MIX_PARAM, 0.f, 10.f, POLEMIX_VOLTAGE_SCALE, "Pole 4 Mix", "%", 0.f, 10.f);
-    configParam(RESONANCE_P1_PARAM, 0.f, 10.f, 10.f, "Pole 1 Feedback", "%", 0.f, 10.f);
-    configParam(RESONANCE_P2_PARAM, 0.f, 10.f, 10.f, "Pole 2 Feedback", "%", 0.f, 10.f);
-    configParam(RESONANCE_P3_PARAM, 0.f, 10.f, 10.f, "Pole 3 Feedback", "%", 0.f, 10.f);
-    configParam(RESONANCE_P4_PARAM, 0.f, 10.f, 10.f, "Pole 4 Feedback", "%", 0.f, 10.f);
+    configParam(RESONANCE_P1_PARAM, 0.f, 1.f, 0.f, "Pole 1 Feedback", "", 0.f, 1.f);
+    configParam(RESONANCE_P2_PARAM, 0.f, 1.f, 0.f, "Pole 2 Feedback", "", 0.f, 1.f);
+    configParam(RESONANCE_P3_PARAM, 0.f, 1.f, 0.f, "Pole 3 Feedback", "", 0.f, 1.f);
+    configParam(RESONANCE_P4_PARAM, 0.f, 1.f, 0.f, "Pole 4 Feedback", "", 0.f, 1.f);
     configSwitch(SCOPE_SCALE_PARAM, 0.f, 2.f, 1.f, "Scope Scale", {"Wide", "Mid", "Narrow"});
     configSwitch(SCOPE_MODE_PARAM, 0.f, 1.f, 0.f, "Scope Mode", {"Bode", "Pole/Zero"});
     expanderClockDivider.setDivision(EXPANDER_CLOCK_DIV);
@@ -177,13 +177,6 @@ struct PoleDancerWorkbench : Module {
           }
         }
 
-      for (int i = 0; i < 5; ++i) {
-        poleMixCoefs.weight[i] = poleMixParamToCoeff(params[DRY_MIX_PARAM + i].getValue());
-      }
-      for (int i = 0; i < 4; ++i) {
-        poleMixCoefs.fb[i] = resonanceParamToCoeff(params[RESONANCE_P1_PARAM + i].getValue());
-      }
-
         // Write to Left.  Resonance is not written.
         PersonalityMessage* toPersonality = static_cast<PersonalityMessage*>(leftExpander.module->rightExpander.producerMessage);
         toPersonality->leftAuthoritative = false;  // Right never claims authority
@@ -193,6 +186,12 @@ struct PoleDancerWorkbench : Module {
         leftExpander.module->rightExpander.messageFlipRequested = true;
       }
 
+      for (int i = 0; i < 5; ++i) {
+        poleMixCoefs.weight[i] = poleMixParamToCoeff(params[DRY_MIX_PARAM + i].getValue());
+      }
+      for (int i = 0; i < 4; ++i) {
+        poleMixCoefs.fb[i] = resonanceParamToCoeff(params[RESONANCE_P1_PARAM + i].getValue());
+      }
     }
 
     int mode = static_cast<int>(std::round(params[SCOPE_MODE_PARAM].getValue()));

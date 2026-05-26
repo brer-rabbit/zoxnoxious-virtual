@@ -48,7 +48,7 @@ struct PoleDancerPersonality : Module {
     configParam(POLE2_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 2 Mix", "%", 0.f, 10.f);
     configParam(POLE3_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 3 Mix", "%", 0.f, 10.f);
     configParam(POLE4_MIX_KNOB_PARAM, 0.f, 10.f, POLEMIX_VOLTAGE_SCALE, "Pole 4 Mix", "%", 0.f, 10.f);
-    configOutput(POLE_MIX_OUTPUT, "Pole Mix Voltage Series");
+    configOutput(POLE_MIX_OUTPUT, "Pole Mix(5)");
 
     memset(voltages, 0, sizeof(float) * numVoltages);
 

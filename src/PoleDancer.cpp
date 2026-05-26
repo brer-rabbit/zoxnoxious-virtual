@@ -115,7 +115,9 @@ struct PoleDancer : Module {
     configParam(RES_KNOB_PARAM, 0.f, 1.f, 0.f, "Resonance", "%", 0.f, 100.f);
     configParam(RES_CV_PARAM, -1.f, 1.f, 0.f, "Resonance CV", "%", 0.f, 100.f);
     configParam(CUTOFF_CV_PARAM, -1.f, 1.f, 0.f, "Cutoff frequency CV", "%", 0.f, 100.f);
-
+    configInput(CUTOFF_INPUT, "Cutoff CV In");
+    configInput(RESONANCE_INPUT, "Resonance CV In");
+    configInput(IN_INPUT, "Audio Input");
     configInput(POLE_MIX_INPUT, "Pole Mix(5)");
     configOutput(MIX_OUTPUT, "Filter Output");
 
