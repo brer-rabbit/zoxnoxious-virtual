@@ -47,7 +47,7 @@ struct PoleDancerPersonality : Module {
     configParam(POLE1_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 1 Mix", "%", 0.f, 10.f);
     configParam(POLE2_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 2 Mix", "%", 0.f, 10.f);
     configParam(POLE3_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Pole 3 Mix", "%", 0.f, 10.f);
-    configParam(POLE4_MIX_KNOB_PARAM, 0.f, 10.f, 10.f, "Pole 4 Mix", "%", 0.f, 10.f);
+    configParam(POLE4_MIX_KNOB_PARAM, 0.f, 10.f, POLEMIX_VOLTAGE_SCALE, "Pole 4 Mix", "%", 0.f, 10.f);
     configOutput(POLE_MIX_OUTPUT, "Pole Mix Voltage Series");
 
     clockDivider.setDivision(512);
@@ -253,20 +253,11 @@ struct PoleDancerPersonalityWidget : ModuleWidget {
     addChild(createWidget<ScrewSlottedKnurled>(Vec(RACK_GRID_WIDTH, 0)));
     addChild(createWidget<ScrewSlottedKnurled>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-    /*
-    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 18.524)), module, PoleDancerPersonality::DRY_MIX_KNOB_PARAM));
-    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 33.120)), module, PoleDancerPersonality::POLE1_MIX_KNOB_PARAM));
-    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 47.670)), module, PoleDancerPersonality::POLE2_MIX_KNOB_PARAM));
-    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 62.273)), module, PoleDancerPersonality::POLE3_MIX_KNOB_PARAM));
-    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(21.760, 76.849)), module, PoleDancerPersonality::POLE4_MIX_KNOB_PARAM));
-    */
-
     addOutput(createOutputCentered<BNCPort>(mm2px(Vec(15.24, 106.579)), module, PoleDancerPersonality::POLE_MIX_OUTPUT));
 
     // personality name
     PersonalityDisplay *personalityDisplay = createWidget<PersonalityDisplay>(mm2px(Vec(3.457, 22.0)));
     personalityDisplay->box.size = mm2px(Vec(23.513, 4.5));
-    //personalityDisplay->box.size = mm2px(Vec(35, 10));
     personalityDisplay->setModule(module);
     addChild(personalityDisplay);
 
@@ -276,7 +267,7 @@ struct PoleDancerPersonalityWidget : ModuleWidget {
 
     menu->addChild(new MenuSeparator());
 
-    InstantiateExpanderItem *expanderItem = createMenuItem<InstantiateExpanderItem>("Add workbench (right side)", "");
+    InstantiateExpanderItem *expanderItem = createMenuItem<InstantiateExpanderItem>("Add Architect (right side)", "");
     expanderItem->module = module;
     expanderItem->model = modelPoleDancerWorkbenchForPersonalityVirtual;
     expanderItem->posit = box.pos;

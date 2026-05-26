@@ -147,9 +147,14 @@ void TurnsCountingKnob::drawCounterWindow(const DrawArgs& args,
   nvgFillColor(vg, nvgRGBA(255, 0x90, 0x10, 0xff));
 
   char buf[3] = { '0', '\0', '\0' };
-  if (turn < -9 || turn > 9) {
+  if (turn < -9) {
     // this is out of range!
     buf[0] = '0';
+  }
+  else if (turn > 9) {
+    turn = turn % 10;
+    buf[0] = static_cast<char>('0' + turn);
+    buf[1] = '.';
   }
   else if (turn >= 0) {
     buf[0] = static_cast<char>('0' + turn);
@@ -163,7 +168,7 @@ void TurnsCountingKnob::drawCounterWindow(const DrawArgs& args,
 
   // then display all segment with a low alpha for realism
   nvgFillColor(vg, nvgRGBA(255, 0x90, 0x10, 0x30));
-  nvgText(vg, cx, cy, ".8", nullptr);
+  nvgText(vg, cx, cy, ".8.", nullptr);
 
 }
 

@@ -4,6 +4,7 @@
 
 namespace noxious {
 
+static constexpr float POLEMIX_VOLTAGE_SCALE = 10.0f / 32.f;
 
 // filter vector:
 // struct that gets passed between modules via expander interface

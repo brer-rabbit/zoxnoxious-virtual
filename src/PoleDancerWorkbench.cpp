@@ -38,9 +38,8 @@ struct PoleMixCoefficients {
 };
 
 
-static constexpr float POLEMIX_VOLTAGE_ANALYZER = 0.8f; // 10V --> scale for 8X
 static float poleMixParamToCoeff(float v) {
-  return v * POLEMIX_VOLTAGE_ANALYZER;
+  return v * (1/POLEMIX_VOLTAGE_SCALE);
 }
 
 static constexpr float RESONANCE_VOLTAGE_SCALE = 4.f; // 2.5V == coefficient 1.0
@@ -149,7 +148,7 @@ struct PoleDancerWorkbench : Module {
     configParam(POLE1_MIX_PARAM, 0.f, 10.f, 0.f, "Pole 1 Mix", "%", 0.f, 10.f);
     configParam(POLE2_MIX_PARAM, 0.f, 10.f, 0.f, "Pole 2 Mix", "%", 0.f, 10.f);
     configParam(POLE3_MIX_PARAM, 0.f, 10.f, 0.f, "Pole 3 Mix", "%", 0.f, 10.f);
-    configParam(POLE4_MIX_PARAM, 0.f, 10.f, 10.f, "Pole 4 Mix", "%", 0.f, 10.f);
+    configParam(POLE4_MIX_PARAM, 0.f, 10.f, POLEMIX_VOLTAGE_SCALE, "Pole 4 Mix", "%", 0.f, 10.f);
     configParam(RESONANCE_P1_PARAM, 0.f, 10.f, 10.f, "Pole 1 Feedback", "%", 0.f, 10.f);
     configParam(RESONANCE_P2_PARAM, 0.f, 10.f, 10.f, "Pole 2 Feedback", "%", 0.f, 10.f);
     configParam(RESONANCE_P3_PARAM, 0.f, 10.f, 10.f, "Pole 3 Feedback", "%", 0.f, 10.f);

@@ -12,12 +12,6 @@ struct PoleMixCoefficients {
   float weight[5] = {};
 };
 
-static constexpr float POLEMIX_VOLTAGE_SCALE = 10.0f / 32.f;
-
-static float poleMixInputToCoeff(float v) {
-  return v / POLEMIX_VOLTAGE_SCALE;
-}
-
 
 using simd::float_4;
 
@@ -137,15 +131,13 @@ struct PoleDancer : Module {
   }
 
   void process(const ProcessArgs& args) override {
-    if (!outputs[MIX_OUTPUT].isConnected()) {
-      return;
-    }
 
     if (inputs[POLE_MIX_INPUT].isConnected()) {
       int n = inputs[POLE_MIX_INPUT].getChannels();
 
       for (int i = 0; i < 5; ++i) {
-        poleMix.weight[i] = (n > i) ? poleMixInputToCoeff(inputs[POLE_MIX_INPUT].getVoltage(i)) : 0.f;
+        //poleMix.weight[i] = (n > i) ? poleMixInputToCoeff(inputs[POLE_MIX_INPUT].getVoltage(i)) : 0.f;
+        poleMix.weight[i] = (n > i) ? inputs[POLE_MIX_INPUT].getVoltage(i) : 0.f;
       }
     }
     else {
@@ -166,7 +158,42 @@ struct PoleDancer : Module {
     float freqCvParam = params[CUTOFF_CV_PARAM].getValue();
 
     int channels = std::max(1, inputs[IN_INPUT].getChannels());
-    float rez_ch1;
+
+
+    // Expander handling.  This does not read from analyzer.  Write only.
+    bool analyzerPresent = rightExpander.module && rightExpander.module->model == modelPoleDancerWorkbenchForPoleDancerVirtual;
+    if (analyzerPresent) {
+      // Write to Analyzer
+      PersonalityMessage *toAnalyzer = static_cast<PersonalityMessage*>(rightExpander.module->leftExpander.producerMessage);
+      toAnalyzer->leftAuthoritative = true; // always authoritative
+      if (inputs[POLE_MIX_INPUT].isConnected()) {
+        toAnalyzer->values[0] = poleMix.weight[0];
+        toAnalyzer->values[1] = poleMix.weight[1];
+        toAnalyzer->values[2] = poleMix.weight[2];
+        toAnalyzer->values[3] = poleMix.weight[3];
+        toAnalyzer->values[4] = poleMix.weight[4];
+      }
+      else { // 4-pole lowpass values
+        toAnalyzer->values[0] = 0.f;
+        toAnalyzer->values[1] = 0.f;
+        toAnalyzer->values[2] = 0.f;
+        toAnalyzer->values[3] = 0.f;
+        toAnalyzer->values[4] = POLEMIX_VOLTAGE_SCALE;
+      }
+
+      float rez_ch0 = resParam + inputs[RESONANCE_INPUT].getVoltage(0) / 10.f * resCvParam;
+      rez_ch0 = clamp(rez_ch0, 0.f, 1.f);
+      toAnalyzer->resonance[3] = rez_ch0;
+      toAnalyzer->resonance[2] = 0.f;
+      toAnalyzer->resonance[1] = 0.f;
+      toAnalyzer->resonance[0] = 0.f;
+
+      rightExpander.module->leftExpander.messageFlipRequested = true;
+    }
+
+    if (!outputs[MIX_OUTPUT].isConnected()) {
+      return;
+    }
 
     for (int c = 0; c < channels; c += 4) {
       auto& filter = filters[c / 4];
@@ -180,9 +207,6 @@ struct PoleDancer : Module {
       float_4 resonance = resParam + inputs[RESONANCE_INPUT].getPolyVoltageSimd<float_4>(c) / 10.f * resCvParam;
       resonance = clamp(resonance, 0.f, 1.f);
       filter.resonance = simd::pow(resonance, 2) * 10.f;
-      if (c == 0) {
-        rez_ch1 = resonance[0];
-      }
 
       // Get pitch
       float_4 pitch = freqParam + inputs[CUTOFF_INPUT].getPolyVoltageSimd<float_4>(c) * freqCvParam;
@@ -200,28 +224,6 @@ struct PoleDancer : Module {
     }
 
     outputs[MIX_OUTPUT].setChannels(channels);
-
-    // Expander handling.  This does not read from analyzer.  Write only.
-    bool analyzerPresent = rightExpander.module && rightExpander.module->model == modelPoleDancerWorkbenchForPoleDancerVirtual;
-    if (analyzerPresent) {
-      // Write to Analyzer
-      PersonalityMessage *toAnalyzer = static_cast<PersonalityMessage*>(rightExpander.module->leftExpander.producerMessage);
-      toAnalyzer->leftAuthoritative = true; // always authoritative
-      if (inputs[POLE_MIX_INPUT].isConnected()) {
-        toAnalyzer->values[0] = poleMix.weight[0];
-        toAnalyzer->values[1] = poleMix.weight[1];
-        toAnalyzer->values[2] = poleMix.weight[2];
-        toAnalyzer->values[3] = poleMix.weight[3];
-        toAnalyzer->values[4] = poleMix.weight[4];
-        toAnalyzer->resonance[3] = 1.f * rez_ch1;
-        toAnalyzer->resonance[2] = 0.f;
-        toAnalyzer->resonance[1] = 0.f;
-        toAnalyzer->resonance[0] = 0.f;
-      }
-
-      rightExpander.module->leftExpander.messageFlipRequested = true;
-    }
-
   }
 };
 
@@ -264,7 +266,7 @@ struct PoleDancerWidget : ModuleWidget {
 
     menu->addChild(new MenuSeparator());
 
-    InstantiateExpanderItem *expanderItem = createMenuItem<InstantiateExpanderItem>("Add workbench (right side)", "");
+    InstantiateExpanderItem *expanderItem = createMenuItem<InstantiateExpanderItem>("Add Morphscope (right side)", "");
     expanderItem->module = module;
     expanderItem->model = modelPoleDancerWorkbenchForPoleDancerVirtual;
     expanderItem->posit = box.pos;
