@@ -107,6 +107,7 @@ struct PoleDancer : Module {
   LadderFilter<float_4> filters[4];
   PoleMixCoefficients poleMix;
   PersonalityMessage expanderMessages[2] = {};
+  dsp::ClockDivider expanderClockDivider;
 
   PoleDancer() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
@@ -120,8 +121,10 @@ struct PoleDancer : Module {
 
     configBypass(IN_INPUT, MIX_OUTPUT);
 
+    // expanders are UI elements, not audio rate
     rightExpander.producerMessage = &expanderMessages[0];
     rightExpander.consumerMessage = &expanderMessages[1];
+    expanderClockDivider.setDivision(EXPANDER_CLOCK_DIV);
   }
 
   void onReset() override {
@@ -131,6 +134,7 @@ struct PoleDancer : Module {
   }
 
   void process(const ProcessArgs& args) override {
+    bool isExpanderClockTick = expanderClockDivider.process();
 
     if (inputs[POLE_MIX_INPUT].isConnected()) {
       int n = inputs[POLE_MIX_INPUT].getChannels();
@@ -162,7 +166,7 @@ struct PoleDancer : Module {
 
     // Expander handling.  This does not read from analyzer.  Write only.
     bool analyzerPresent = rightExpander.module && rightExpander.module->model == modelPoleDancerWorkbenchForPoleDancerVirtual;
-    if (analyzerPresent) {
+    if (isExpanderClockTick && analyzerPresent) {
       // Write to Analyzer
       PersonalityMessage *toAnalyzer = static_cast<PersonalityMessage*>(rightExpander.module->leftExpander.producerMessage);
       toAnalyzer->leftAuthoritative = true; // always authoritative

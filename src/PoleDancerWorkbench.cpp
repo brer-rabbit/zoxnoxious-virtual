@@ -136,7 +136,7 @@ struct PoleDancerWorkbench : Module {
   };
 
 
-  dsp::ClockDivider clockDivider;
+  dsp::ClockDivider expanderClockDivider;
   PoleMixCoefficients poleMixCoefs;
   ScopeMode scopeMode;
 
@@ -155,7 +155,7 @@ struct PoleDancerWorkbench : Module {
     configParam(RESONANCE_P4_PARAM, 0.f, 10.f, 10.f, "Pole 4 Feedback", "%", 0.f, 10.f);
     configSwitch(SCOPE_SCALE_PARAM, 0.f, 2.f, 1.f, "Scope Scale", {"Wide", "Mid", "Narrow"});
     configSwitch(SCOPE_MODE_PARAM, 0.f, 1.f, 0.f, "Scope Mode", {"Bode", "Pole/Zero"});
-    clockDivider.setDivision(512);
+    expanderClockDivider.setDivision(EXPANDER_CLOCK_DIV);
     leftExpander.producerMessage = &expanderMessages[0];
     leftExpander.consumerMessage = &expanderMessages[1];
   }
@@ -163,7 +163,7 @@ struct PoleDancerWorkbench : Module {
 
   void process(const ProcessArgs& args) override {
 
-    if (clockDivider.process()) {
+    if (expanderClockDivider.process()) {
 
       if (leftPresent()) {
         // Read from Personality

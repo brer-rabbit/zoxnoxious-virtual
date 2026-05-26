@@ -15,36 +15,36 @@
   "modules": [
     {
       "slug": "PoleDancer",
-      "name": "PoleDancer",
-      "description": "morphing multimode analog filter",
+      "name": "Pole Dancer",
+      "description": "Morphing multimode filter",
       "tags": [
-        "VCF"
+        "Filter"
       ]
     },
     {
       "slug": "PoleDancerPersonality",
-      "name": "PoleDancerPersonality",
-      "description": "Personality module for Pole Dancer",
+      "name": "Pole Dancer Personality",
+      "description": "Filter topology for Pole Dancer",
       "tags": [
-          "VCF"
+          "Filter"
       ]
     },
     {
       "slug": "PoleDancerWorkbench-PoleDancer",
-      "name": "PoleDancerWorkbench",
-      "description": "Pole Mixing Inspector",
+      "name": "Pole Dancer Morphscope",
+      "description": "Expands Pole Dancer with a Morphscope",
       "hidden": true,
       "tags": [
-        "Expander"
+        "Filter", "Expander"
       ]
     },
     {
       "slug": "PoleDancerWorkbench-Personality",
-      "name": "PoleDancerWorkbench",
-      "description": "Pole Mixing Inspector",
+      "name": "Personality Architect",
+      "description": "View and create filters",
       "hidden": true,
       "tags": [
-        "Expander"
+        "Filter", "Expander"
       ]
     }
   ]

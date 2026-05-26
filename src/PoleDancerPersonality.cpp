@@ -33,11 +33,11 @@ struct PoleDancerPersonality : Module {
   std::string personalityNameString;
   bool nameStringDirty;
 
-  dsp::ClockDivider clockDivider;
   float voltages[numVoltages];
 
   PersonalityMessage expanderMessages[2] = {};
   bool personalityAuthoritative = false;
+  dsp::ClockDivider expanderClockDivider;
 
   PoleDancerPersonality() :
     personalityNameString(names[APP->engine->getFrame() % nameCount]), nameStringDirty(true) {
@@ -50,17 +50,17 @@ struct PoleDancerPersonality : Module {
     configParam(POLE4_MIX_KNOB_PARAM, 0.f, 10.f, POLEMIX_VOLTAGE_SCALE, "Pole 4 Mix", "%", 0.f, 10.f);
     configOutput(POLE_MIX_OUTPUT, "Pole Mix Voltage Series");
 
-    clockDivider.setDivision(512);
     memset(voltages, 0, sizeof(float) * numVoltages);
 
     rightExpander.producerMessage = &expanderMessages[0];
     rightExpander.consumerMessage = &expanderMessages[1];
+    expanderClockDivider.setDivision(EXPANDER_CLOCK_DIV);
   }
 
 
   void process(const ProcessArgs& args) override {
 
-    if (clockDivider.process()) {
+    if (expanderClockDivider.process()) {
 
       // expander handling
       bool analyzerPresent = rightExpander.module && rightExpander.module->model == modelPoleDancerWorkbenchForPersonalityVirtual;
