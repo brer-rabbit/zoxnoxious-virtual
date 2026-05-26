@@ -1,0 +1,51 @@
+{
+  "slug": "ZoxnoxiousVirtual",
+  "name": "Zoxnoxious Virtual Modules",
+  "version": "2.0.0",
+  "license": "GPL-3.0-or-later",
+  "brand": "Zoxnoxious",
+  "author": "Zoxnoxious",
+  "authorEmail": "zoxnoxious@patentinvestor.com",
+  "authorUrl": "https://github.com/brer-rabbit/",
+  "pluginUrl": "",
+  "manualUrl": "",
+  "sourceUrl": "https://github.com/brer-rabbit/zoxnoxious-virtual/",
+  "donateUrl": "",
+  "changelogUrl": "",
+  "modules": [
+    {
+      "slug": "PoleDancer",
+      "name": "PoleDancer",
+      "description": "morphing multimode analog filter",
+      "tags": [
+        "VCF"
+      ]
+    },
+    {
+      "slug": "PoleDancerPersonality",
+      "name": "PoleDancerPersonality",
+      "description": "Personality module for Pole Dancer",
+      "tags": [
+          "VCF"
+      ]
+    },
+    {
+      "slug": "PoleDancerWorkbench-PoleDancer",
+      "name": "PoleDancerWorkbench",
+      "description": "Pole Mixing Inspector",
+      "hidden": true,
+      "tags": [
+        "Expander"
+      ]
+    },
+    {
+      "slug": "PoleDancerWorkbench-Personality",
+      "name": "PoleDancerWorkbench",
+      "description": "Pole Mixing Inspector",
+      "hidden": true,
+      "tags": [
+        "Expander"
+      ]
+    }
+  ]
+}
