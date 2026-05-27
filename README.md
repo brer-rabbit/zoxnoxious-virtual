@@ -28,13 +28,13 @@ The TL;DR description of the modules:
 
 ### Pole Dancer
 
-#### General Concept
-
 The Pole Dancer is not your ordinary filter.  Nor an ordinary multimode filter.  The Pole Dancer is able to continuously morph filter responses: go from a growl of a 4-pole lowpass to a notched highpass to a phaser-effect with an allpass filter.  All sequenced in VCV Rack.
 
 ![IM](doc/PoleDancer.png)
 
 The Pole Dancer is a 4-pole filter.  By itself, it's a 4-pole lowpass filter.  Controls are very similar to any other filter.  The notable difference with the filter is the "Filter Topology" input.  This is intended to be patched from a Personality module: either directly or indirectly via other VCV Rack modules.
+
+Style note: these modules style were inspired by Nuclear Instrumentation Modules (NIM).  The frequency cutoff is a turns counter knob, displaying the number of rotations, with one rotation being exactly one octave.  Connectors are BNC styled.  Slotted knurled screws round out the hardware styling.
 
 ### Personality
 
