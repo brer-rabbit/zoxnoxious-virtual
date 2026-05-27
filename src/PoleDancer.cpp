@@ -248,8 +248,9 @@ struct PoleDancerWidget : ModuleWidget {
     knob->setTurns(10);
     knob->turnFromParam = [](float param) -> int {
       // param is in volts, -5V to +5V, octave boundaries at integers
-      // floor(param + 5) gives turn 0 at -5V, turn 10 at +5V
-      return static_cast<int>(std::floor(param + 5.f));
+      // floor(param + 5) gives turn 0 at -5V, turn 10 at +5V.
+      // Drop by one, so C-1 reads ".1" on the single digit display
+      return static_cast<int>(std::floor(param + 5.f) - 1);
     };
     addParam(knob);
 
