@@ -26,7 +26,8 @@ The TL;DR description of the modules:
 
 ## Detailed Descriptions
 
-Style note: module style were inspired by Nuclear Instrumentation Modules (NIM).  The frequency cutoff is a turns counter knob, displaying the current octave, with one rotation being exactly one octave.  Connectors are BNC styled.  Slotted knurled screws round out the hardware styling.
+Style note: the module interfaces are visually inspired by Nuclear Instrumentation Modules (NIM) hardware.  Frequency cutoff uses a turns-counting dial where one full rotation corresponds to one octave, with the counter displaying the octave.  BNC-style connectors and slotted knurled screws complete the laboratory-instrument aesthetic.
+
 
 ### Pole Dancer
 
