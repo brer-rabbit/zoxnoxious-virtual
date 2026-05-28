@@ -46,7 +46,7 @@ The Personality module defines the filter type for the Pole Dancer.  Many filter
 
 ![IM](doc/Personality_Presets.png)
 
-The number of presets is huge.  Why so many filters?  Many filters sound similar in isolation, however the way they morph to other filters can be wildly different.
+The number of presets is huge.  Why so many filters when many are so similar?  Many do sound similar in isolation, however the way they morph to other filters can be wildly different.
 
 ### Morphscope
 
