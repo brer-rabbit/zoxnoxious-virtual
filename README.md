@@ -106,8 +106,7 @@ To take things to the extreme, instead of slew limiting the entire filter morph,
 
 #### Audio Rate Modulation
 
-Yes.  At audio rate the Pole Dancer is less of a filter and more of a waveshaper.  Use a VCO to morph filter modes at audio rate and you can get some unique results.
-
+Yes.  The Filter Topology signal can move at audio rate.  The Pole Dancer becomes less a subtractive synth too: sidebands are generated that can range from subtle to aggressive.  One may want to start with simpler waveforms (triangle, sine) for audio rate crossfading.  That said, no requirement there.  At extreme modulation depths Pole Dancer is less like a conventional filter and more like a dynamic spectral processor.
 
 #### Envelope-Controlled Filter Morphing
 
