@@ -82,7 +82,7 @@ Instantiate both a Pole Dancer and a Personality module from the module browser.
 
 ![IM](doc/Patch_Crossfade.png)
 
-A crossfade is very easy to setup.  Patch two Personality modules to a crossfade, and the output to the Pole Dancer.
+A crossfade is very easy to setup.  Patch two Personality modules to a crossfade, and the output to the Pole Dancer.  Tech suggestion: linear crossfade (-6dB) is likely preferred over constant power crossfade.
 
 ![IM](doc/Patch_Oberheim.png)
 
@@ -108,3 +108,22 @@ To take things to the extreme, instead of slew limiting the entire filter morph,
 
 Yes.  At audio rate the Pole Dancer is less of a filter and more of a waveshaper.  Use a VCO to morph filter modes at audio rate and you can get some unique results.
 
+
+#### Envelope-Controlled Filter Morphing
+
+A classic subtractive synthesis technique is sending an envelope to filter cutoff: fast attack, slower decay, moderate resonance.  This creates the familiar effect of a filter quickly opening and then closing.  Try a different approach with Pole Dancer.  Instead of modulating cutoff frequency, use the envelope to control a crossfade between two Personality modules.
+
+Try this:
+
+* Personality A: highpass filter
+* Personality B: lowpass filter
+
+Patch an envelope to a crossfade control.  The resulting sound can begin with a sharp burst of high-frequency emphasis before decaying into a lower-frequency resonant body.  Depending on the selected filter responses and modulation depth, the effect may resemble:
+
+* plucked metallic transients
+* animated spectral sweeps
+* vocal-like movement
+* aggressive resonant motion
+* evolving phase-like coloration
+
+The important distinction is the envelope is no longer moving only the cutoff frequency.  It is reshaping the filter response itself over time.
