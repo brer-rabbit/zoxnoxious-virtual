@@ -44,6 +44,10 @@ The Pole Dancer by itself is a 4-pole lowpass filter.  Controls are very similar
 
 The Personality module defines the filter type for the Pole Dancer.  Many filter types are available as presets: right-click the module to access presets.  Once loaded the filter name is displayed on the module (this is an editable field).  The output can be patched straight to the Pole Dancer or through other modules to affect crossfade, switching, or otherwise morphing filter mode.
 
+![IM](doc/PoleDancer_Presets.png)
+
+The number of presets is huge.  Why so many filters?  Many filters sound similar in isolation, however the way they morph to other filters can be wildly different.
+
 ### Morphscope
 
 ![IM](doc/Morphscope.png)
