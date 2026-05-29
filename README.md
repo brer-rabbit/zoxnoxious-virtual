@@ -46,7 +46,7 @@ The Personality module defines the filter type for the Pole Dancer.  Many filter
 
 ![IM](doc/Personality_Presets.png)
 
-The number of presets is huge.  Why so many filters?  Many filters sound similar in isolation, however the way they morph to other filters can be wildly different.
+The number of presets is huge.  Why so many filters when many are so similar?  Many do sound similar in isolation, however the way they morph to other filters can be wildly different.
 
 ### Morphscope
 
@@ -58,7 +58,7 @@ The Morphscope is available via right-click menu on the Pole Dancer.  This modul
 
 ![IM](doc/Architect.png)
 
-The Architect is available via right-click menu on the Personality.  Architect provides a visual feedback of filter response.  Usage is different from the Morphscope: Architect provides five trim pots to control filter pole mix levels.  The levels are sent back to Personality where they can drive a Pole Dancer filter.  The intended *filter design* workflow is to set controls in Architect, name the field in Personality, and save the result as a preset.  For typical use the Architect's controls may be left as-is.  Do note each channel has a massive 32X gain: don't blow your speakers out!  A little does a lot.
+The Architect is available via right-click menu on the Personality.  Architect provides a visual feedback of filter response.  Usage is different from the Morphscope: Architect provides five trim pots to control filter pole mix levels.  The levels are sent back to Personality where they can drive a Pole Dancer filter.  The intended *filter design* workflow is to set controls in Architect, name the field in Personality, and save the result as a Personality preset.  For typical use the Architect's controls may be left as-is.  Do note each channel has a massive 32X gain: don't blow your speakers out!  A little does a lot.
 
 
 ## Usage
