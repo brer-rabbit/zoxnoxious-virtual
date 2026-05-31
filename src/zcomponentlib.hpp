@@ -28,6 +28,26 @@ struct ZoxAmberLight : GrayModuleLightWidget {
 };
 
 
+//
+// knobs
+//
+
+// trimpot
+struct ZoxTrimpot : app::SvgKnob {
+  widget::SvgWidget* bg;
+
+  ZoxTrimpot() {
+    minAngle = -0.83 * M_PI;
+    maxAngle = 0.83 * M_PI;
+
+    bg = new widget::SvgWidget;
+    fb->addChildBelow(bg, tw);
+
+    setSvg(Svg::load(asset::plugin(pluginInstance, "res/ZTrimpot.svg")));
+    bg->setSvg(Svg::load(asset::plugin(pluginInstance, "res/ZTrimpot_bg.svg")));
+  }
+};
+
 
 //
 // ZPushButtons -- Medium and Small
