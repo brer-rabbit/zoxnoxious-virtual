@@ -1,6 +1,6 @@
 # Zoxnoxious VCV Rack Virtual Modules
 
-The Zoxnoxious "Beyond Obnoxious" VCV Rack-virtual modules live here.  These provide alternatives to the hardware versions in the [Zoxnoxious](https://github.com/brer-rabbit/zoxnoxious) github repo.
+The Zoxnoxious "Beyond Obnoxious" VCV Rack-virtual modules live here.  These provide alternatives to the hardware/control surface versions in the [Zoxnoxious](https://github.com/brer-rabbit/zoxnoxious) github repo.
 
 <a id="modules"></a>
 ## Modules
