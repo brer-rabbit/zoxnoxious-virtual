@@ -254,7 +254,7 @@ struct PoleDancerWidget : ModuleWidget {
     };
     addParam(knob);
 
-    addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(33.132, 25.599)), module, PoleDancer::RES_KNOB_PARAM));
+    addParam(createParamCentered<ZoxMediumKnob>(mm2px(Vec(33.132, 25.599)), module, PoleDancer::RES_KNOB_PARAM));
     addParam(createParamCentered<ZoxTrimpot>(mm2px(Vec(12.669, 47.72)), module, PoleDancer::CUTOFF_CV_PARAM));
     addParam(createParamCentered<ZoxTrimpot>(mm2px(Vec(33.262, 47.72)), module, PoleDancer::RES_CV_PARAM));
 

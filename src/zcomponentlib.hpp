@@ -32,19 +32,35 @@ struct ZoxAmberLight : GrayModuleLightWidget {
 // knobs
 //
 
-// trimpot
-struct ZoxTrimpot : app::SvgKnob {
+struct ZoxKnob : app::SvgKnob {
   widget::SvgWidget* bg;
 
-  ZoxTrimpot() {
+  ZoxKnob() {
     minAngle = -0.83 * M_PI;
     maxAngle = 0.83 * M_PI;
 
     bg = new widget::SvgWidget;
     fb->addChildBelow(bg, tw);
+  }
+};
+
+// trimpot
+struct ZoxTrimpot : ZoxKnob {
+  widget::SvgWidget* bg;
+
+  ZoxTrimpot() {
+    bg = new widget::SvgWidget;
+    fb->addChildBelow(bg, tw);
 
     setSvg(Svg::load(asset::plugin(pluginInstance, "res/ZTrimpot.svg")));
     bg->setSvg(Svg::load(asset::plugin(pluginInstance, "res/ZTrimpot_bg.svg")));
+  }
+};
+
+struct ZoxMediumKnob : ZoxKnob {
+  ZoxMediumKnob() {
+    setSvg(Svg::load(asset::plugin(pluginInstance, "res/ZKnobMedium.svg")));
+    bg->setSvg(Svg::load(asset::plugin(pluginInstance, "res/ZKnobMedium_bg.svg")));
   }
 };
 
