@@ -40,7 +40,7 @@ struct PoleDancerPersonality : Module {
   dsp::ClockDivider expanderClockDivider;
 
   PoleDancerPersonality() :
-    personalityNameString(names[APP->engine->getFrame() % nameCount]), nameStringDirty(true) {
+    personalityNameString("LOAD PRESET"), nameStringDirty(true) {
 
     config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
     configParam(DRY_MIX_KNOB_PARAM, 0.f, 10.f, 0.f, "Dry Mix", "%", 0.f, 10.f);
@@ -253,7 +253,7 @@ struct PoleDancerPersonalityWidget : ModuleWidget {
     addChild(createWidget<ScrewSlottedKnurled>(Vec(RACK_GRID_WIDTH, 0)));
     addChild(createWidget<ScrewSlottedKnurled>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-    addOutput(createOutputCentered<BNCPort>(mm2px(Vec(15.24, 106.579)), module, PoleDancerPersonality::POLE_MIX_OUTPUT));
+    addOutput(createOutputCentered<BNCPort>(mm2px(Vec(15.24, 91.886)), module, PoleDancerPersonality::POLE_MIX_OUTPUT));
 
     // personality name
     PersonalityDisplay *personalityDisplay = createWidget<PersonalityDisplay>(mm2px(Vec(3.457, 22.0)));
