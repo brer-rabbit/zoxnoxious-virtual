@@ -2,6 +2,8 @@
 
 The Zoxnoxious "Beyond Obnoxious" VCV Rack-virtual (Rack-native?) modules live here.  These provide alternatives to the hardware/control surface versions in the [Zoxnoxious](https://github.com/brer-rabbit/zoxnoxious) github repo that require actual Zoxnoxious hardware voice cards.
 
+Currently this repository contains the Pole Dancer set of modules.  Pole Dancer approaches morphing filter design from a modular synthesis perspective.  Rather than selecting a fixed filter mode, filter behavior itself becomes something that can be patched, crossfaded, sequenced, and modulated using standard Rack modules.
+
 <a id="modules"></a>
 ## Modules
 
@@ -108,11 +110,11 @@ Jumping filter modes might be a bit much.  Including a slew limiter will smooth 
 
 ![IM](doc/Patch_Slew_Single_Pole.png)
 
-To take things to the extreme, instead of slew limiting the entire filter morph, only slew limit a single filter pole's movement.  Use Split to access the individual channels, slew limit one or more, and merge the result back to the Pole Dancer.  Or, slew limit multiple filter poles at different rates.  The Befaco Slew Limiter is a very good option here as well.
+To take things to the extreme, instead of slew limiting the entire filter morph, only slew limit a single filter pole's movement.  Use Split to access the individual channels, slew limit one and merge the result back to the Pole Dancer.  Or, slew limit multiple filter poles at different rates.  This can give a big "accent" or almost a "pluck" in some patches.  With support for different rise/fall slews, the Befaco Slew Limiter is a very good option here for slew limiting.
 
 ### Audio Rate Modulation
 
-Yes.  The Filter Topology signal can move at audio rate.  The Pole Dancer becomes less a subtractive synth too: sidebands are generated that can range from subtle to aggressive.  One may want to start with simpler waveforms (triangle, sine) for audio rate crossfading.  That said, no requirement there.  At extreme modulation depths Pole Dancer is less like a conventional filter and more like a dynamic spectral processor.
+Yes!  The Filter Topology signal can move at audio rate.  The Pole Dancer becomes less a subtractive synth element: sidebands are generated that can range from subtle to aggressive.  One may want to start with simpler waveforms (triangle, sine) for audio rate crossfading.  That said, no requirement there.  At extreme modulation depths Pole Dancer is more like a dynamic spectral processor, adding character to the input signal.
 
 ### Envelope-Controlled Filter Morphing
 
@@ -132,3 +134,7 @@ Patch an envelope to a crossfade control.  The resulting sound can begin with a 
 * evolving phase-like coloration
 
 The important distinction is the envelope is no longer moving only the cutoff frequency.  It is reshaping the filter response itself over time.
+
+### Filter Pings
+
+A common technique in a modular environment is sending a filter ping to the audio input.  Set resonance on the verge of self-oscillation and ping the audio input with a trigger.  A bandpass response can produce interesting effects that vary with filter cutoff.  Now add Pole Dancer morphing: use one of the methods described previously to add character to filter pings.
