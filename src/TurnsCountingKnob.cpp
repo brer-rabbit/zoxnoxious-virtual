@@ -51,8 +51,7 @@ TurnsCountingKnob::TurnsCountingKnob() {
   // Allow smooth wrapping
   snap = false;
 
-  counterFont = APP->window->loadFont(asset::system("res/fonts/DSEG7ClassicMini-BoldItalic.ttf"));
-  //shadow->opacity = 0.00f;
+  counterFontPath = asset::system("res/fonts/DSEG7ClassicMini-BoldItalic.ttf");
 }
 
 void TurnsCountingKnob::setTurns(int turns) {
@@ -142,6 +141,11 @@ void TurnsCountingKnob::drawCounterWindow(const DrawArgs& args,
 
   // ---- digit -------------------------------------------------------------
   nvgFontSize(vg, fontSize);
+  auto counterFont = APP->window->loadFont(counterFontPath);
+  if (!counterFont || counterFont->handle < 0) {
+    return;
+  }
+
   nvgFontFaceId(vg, counterFont->handle);
   nvgTextAlign(vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
   nvgFillColor(vg, nvgRGBA(255, 0x90, 0x10, 0xff));

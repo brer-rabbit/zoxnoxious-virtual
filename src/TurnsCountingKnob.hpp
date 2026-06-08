@@ -69,7 +69,7 @@ struct TurnsCountingKnob : app::SvgKnob {
   std::function<int(float)> turnFromParam;
 
 private:
-  std::shared_ptr<Font> counterFont;
+  std::string counterFontPath;
   int numTurns = 10;
   // Compute the current turn index (0 .. NUM_TURNS-1) from the param value.
   int currentTurn();
