@@ -37,7 +37,7 @@ More than just a 4-pole filter.  More than a multimode filter.  The Pole Dancer 
 
 ![IM](doc/PoleDancer.png)
 
-The Pole Dancer by itself is a 4-pole lowpass filter.  Controls are very similar to any other filter.  The notable difference with the filter is the "Filter Topology" input.  This is intended to be patched from a Personality module: either directly or indirectly via other VCV Rack modules.
+The Pole Dancer by itself is a 4-pole lowpass filter.  Controls are very similar to any other filter.  The notable difference with the filter is the "Filter Topology" input.  This is intended to be patched from a Personality module: either directly or indirectly via other VCV Rack modules.  By patching to the Filter Topology input this filter starts to break from the Fundamental VCF: the code base is the same as Fundamental VCF, the lowpass 4 response is exactly the same.  Make it different!  Utilize the Filter Topology by patching Personality modules.
 
 
 ### Personality
