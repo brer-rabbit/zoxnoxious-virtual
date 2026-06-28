@@ -4,6 +4,8 @@ The Zoxnoxious "Beyond Obnoxious" VCV Rack-virtual (Rack-native?) modules live h
 
 Currently this repository contains the Pole Dancer set of modules.  Pole Dancer approaches morphing filter design from a modular synthesis perspective.  Rather than selecting a fixed filter mode, filter behavior itself becomes something that can be patched, crossfaded, sequenced, and modulated using standard Rack modules.
 
+VCV Rack library link: https://library.vcvrack.com/Zoxnoxious
+
 <a id="modules"></a>
 ## Modules
 
