@@ -6,6 +6,9 @@ Currently this repository contains the Pole Dancer set of modules.  Pole Dancer 
 
 VCV Rack library link: https://library.vcvrack.com/Zoxnoxious
 
+Example tutorial patch walk through: https://patchstorage.com/pole-dancer-morph-examples/
+
+
 <a id="modules"></a>
 ## Modules
 
